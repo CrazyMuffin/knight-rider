@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use JetBrains\PhpStorm\ArrayShape;
-
 class Field implements \JsonSerializable
 {
     private int $x;
@@ -37,7 +35,9 @@ class Field implements \JsonSerializable
         return $this->getX() === $field->getX() && $this->getY() === $field->getY();
     }
 
-    #[ArrayShape(['x' => "int", 'y' => "int"])]
+    /**
+     * @return array<string, int>
+     */
     public function jsonSerialize(): array
     {
         return ['x' => $this->getX(), 'y' => $this->getY()];

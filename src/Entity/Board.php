@@ -8,6 +8,9 @@ class Board
 {
     private int $size;
 
+    /**
+     * @var array<int, array<int, int>>
+     */
     private array $visitedFields;
 
     private const KNIGHT_VECTORS = [
@@ -23,6 +26,7 @@ class Board
 
     public function __construct(int $size)
     {
+        assert($size > 0);
         $this->size = $size;
         $this->visitedFields = array_fill(0, $size, array_fill(0, $size, 99));
     }

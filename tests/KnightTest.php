@@ -17,7 +17,9 @@ class KnightTest extends TestCase
         $result = $board->shortestKnightPath($startAndEnd, $startAndEnd, 0);
 
         $this->assertCount(1, $result);
-        $this->assertTrue($startAndEnd->equals(reset($result)));
+        $field = reset($result);
+        $this->assertInstanceOf(Field::class, $field);
+        $this->assertTrue($startAndEnd->equals($field));
     }
 
     public function testOneMove(): void
@@ -30,8 +32,13 @@ class KnightTest extends TestCase
         $result = $board->shortestKnightPath($start, $end, 0);
 
         $this->assertCount(2, $result);
-        $this->assertTrue($start->equals(reset($result)));
-        $this->assertTrue($end->equals(end($result)));
+        $firstField = reset($result);
+        $lastField = end($result);
+        $this->assertInstanceOf(Field::class, $firstField);
+        $this->assertInstanceOf(Field::class, $lastField);
+
+        $this->assertTrue($start->equals($firstField));
+        $this->assertTrue($end->equals($lastField));
     }
 
     public function testCornerToCorner(): void
@@ -44,7 +51,12 @@ class KnightTest extends TestCase
         $result = $board->shortestKnightPath($start, $end, 0);
 
         $this->assertCount(7, $result);
-        $this->assertTrue($start->equals(reset($result)));
-        $this->assertTrue($end->equals(end($result)));
+        $firstField = reset($result);
+        $lastField = end($result);
+        $this->assertInstanceOf(Field::class, $firstField);
+        $this->assertInstanceOf(Field::class, $lastField);
+
+        $this->assertTrue($start->equals($firstField));
+        $this->assertTrue($end->equals($lastField));
     }
 }
