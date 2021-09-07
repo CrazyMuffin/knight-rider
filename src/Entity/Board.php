@@ -9,9 +9,14 @@ class Board
     private int $size;
 
     /**
-     * @var array<int, array<int, int>>
+     * @var array<int, array<int, array<Field>>>
      */
-    private array $visitedFields;
+    private array $shortestPaths;
+
+    /**
+     * @var array<Field>
+     */
+    private array $queue = [];
 
     private const KNIGHT_VECTORS = [
         [1, 2],
@@ -28,35 +33,37 @@ class Board
     {
         assert($size > 0);
         $this->size = $size;
-        $this->visitedFields = array_fill(0, $size, array_fill(0, $size, 99));
+        $this->shortestPaths = array_fill(0, $size, array_fill(0, $size, []));
     }
 
     /**
      * @return array<Field>
      */
-    public function shortestKnightPath(Field $current, Field $end, int $pathLength): array
+    public function shortestKnightPath(Field $start, Field $end): array
     {
-        if ($current->equals($end)) {
-            return [$current];
-        }
-        $this->visitedFields[$current->getX()][$current->getY()] = $pathLength;
-        $pathLength++;
-        $possibleMoves = [];
-        foreach (self::KNIGHT_VECTORS as $vector) {
-            $newField = $current->move($vector[0], $vector[1]);
-            if ($this->isValidField($newField, $pathLength)) {
-                $path = $this->shortestKnightPath($newField, $end, $pathLength);
-                if (!empty($path) && end($path)->equals($end)) {
-                    array_unshift($path, $current);
-                    $possibleMoves[] = $path;
+        $this->queue[] = $start;
+
+        while (!empty($this->queue)) {
+            $current = array_shift($this->queue);
+
+            $this->shortestPaths[$current->getX()][$current->getY()] = $current->getHistory();
+
+            if ($current->equals($end)) {
+                return $this->shortestPaths[$current->getX()][$current->getY()];
+            }
+
+            foreach (self::KNIGHT_VECTORS as $vector) {
+                $newField = $current->move($vector[0], $vector[1]);
+                if ($this->isValidField($newField)) {
+                    $this->queue[] = $newField;
                 }
             }
         }
-        usort($possibleMoves, static fn (array $a, array $b) => count($a) - count($b));
-        return reset($possibleMoves) ?: [];
+
+        throw new \RuntimeException("No Such path exists.");
     }
 
-    private function isValidField(Field $current, int $pathLength): bool
+    private function isValidField(Field $current): bool
     {
         if ($current->getX() < 0 || $current->getX() >= $this->size) {
             return false;
@@ -64,7 +71,7 @@ class Board
         if ($current->getY() < 0 || $current->getY() >= $this->size) {
             return false;
         }
-        if ($this->visitedFields[$current->getX()][$current->getY()] < $pathLength) {
+        if (!empty($this->shortestPaths[$current->getX()][$current->getY()])) {
             return false;
         }
 

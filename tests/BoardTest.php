@@ -6,7 +6,7 @@ use App\Entity\Board;
 use App\Entity\Field;
 use PHPUnit\Framework\TestCase;
 
-class KnightTest extends TestCase
+class BoardTest extends TestCase
 {
     public function testSameStartAndEnd(): void
     {
@@ -14,7 +14,7 @@ class KnightTest extends TestCase
 
         $startAndEnd = new Field(2,2);
 
-        $result = $board->shortestKnightPath($startAndEnd, $startAndEnd, 0);
+        $result = $board->shortestKnightPath($startAndEnd, $startAndEnd);
 
         $this->assertCount(1, $result);
         $field = reset($result);
@@ -29,7 +29,7 @@ class KnightTest extends TestCase
         $start = new Field(2,2);
         $end = new Field(3, 4);
 
-        $result = $board->shortestKnightPath($start, $end, 0);
+        $result = $board->shortestKnightPath($start, $end);
 
         $this->assertCount(2, $result);
         $firstField = reset($result);
@@ -48,7 +48,7 @@ class KnightTest extends TestCase
         $start = new Field(0,7);
         $end = new Field(7, 0);
 
-        $result = $board->shortestKnightPath($start, $end, 0);
+        $result = $board->shortestKnightPath($start, $end);
 
         $this->assertCount(7, $result);
         $firstField = reset($result);

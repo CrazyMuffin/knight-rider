@@ -13,15 +13,20 @@ class KnightController extends AbstractController
     #[Route('/knight/{size}/{startX},{startY}/{endX},{endY}', name: 'knight')]
     public function index(int $size, int $startX, int $startY, int $endX, int $endY): Response
     {
-        $board = new Board($size);
+        $startTime = microtime(true);
 
-        $path = $board->shortestKnightPath(new Field($startX, $startY), new Field($endX, $endY), 0);
+        $board = new Board($size);
+        $path = $board->shortestKnightPath(new Field($startX, $startY), new Field($endX, $endY));
+
+        $endTime = microtime(true);
+
         return $this->json(
             [
                 'boardSize' => $size,
                 'start' => ['x' => $startX, 'y' => $startY],
                 'end' => ['x' => $endX, 'y' => $endY],
                 'path' => $path,
+                'time' => $endTime - $startTime,
             ]
         );
     }
